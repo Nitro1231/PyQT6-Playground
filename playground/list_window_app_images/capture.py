@@ -1,10 +1,15 @@
 import win32gui
 import win32ui
+import pygetwindow as gw
 from ctypes import windll
 from PIL import Image
 
 
-def get_preview(hwnd: int):
+def get_open_windows() -> tuple[int, str]:
+    return [(win._hWnd, win.title) for win in gw.getAllWindows() if win.title.strip() != '']
+
+
+def get_preview(hwnd: int) -> Image:
     left, top, right, bot = win32gui.GetClientRect(hwnd)
     w = right - left
     h = bot - top
@@ -33,7 +38,4 @@ def get_preview(hwnd: int):
     mfcDC.DeleteDC()
     win32gui.ReleaseDC(hwnd, hwndDC)
 
-    if result == 1:
-        #PrintWindow Succeeded
-        img.save('./test.png')
-    return img
+    return img if result == 1 else None
