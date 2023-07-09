@@ -1,24 +1,38 @@
 import io
 import sys
 import capture
-import win32gui
+from controls import WindowPreview
 from PIL import Image
 from PyQt6.QtGui import QPixmap, QImage
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel
+from PyQt6.QtWidgets import QApplication, QWidget, QHBoxLayout, QListWidget, QListWidgetItem
 
 
 class Window(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
- 
+        self.init_ui()
+
+
+    def init_ui(self) -> None:
         self.setGeometry(200, 200, 700, 400)
-        self.setWindowTitle('Python QLabel')
- 
-        hwnd = win32gui.FindWindow(None, '계산기')
-        img = capture.get_preview(hwnd)
- 
-        self.label = QLabel(self)
-        self.label.setPixmap(self.to_pixmap(img))
+        layout = QHBoxLayout()
+        list_view = QListWidget()
+        list_view.setSpacing(5)
+
+        for hwnd, title in capture.get_open_windows():
+            print(title)
+            try:
+                widget_object = WindowPreview(title, self.to_pixmap(capture.get_preview(hwnd)))
+
+                widget_item = QListWidgetItem(list_view)
+                widget_item.setSizeHint(widget_object.sizeHint())
+                list_view.setItemWidget(widget_item, widget_object)
+                list_view.addItem(widget_item)
+            except Exception as e:
+                print('Error:', e)
+
+        layout.addWidget(list_view)
+        self.setLayout(layout)
 
 
     def to_pixmap(self, image: Image) -> QPixmap:
