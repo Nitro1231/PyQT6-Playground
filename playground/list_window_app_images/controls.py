@@ -16,9 +16,10 @@ class WindowPreview(QFrame):
 
 
     def init_ui(self) -> None:
-        self.setFixedWidth(WIDTH + 2 * MARGIN)
+        self.setFixedWidth(WIDTH + 10)
         layout = QVBoxLayout()
-        layout.setContentsMargins(MARGIN, MARGIN, MARGIN, MARGIN)
+        layout.setContentsMargins(0, 1, 0, 3)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
 
         # Title label
@@ -34,6 +35,6 @@ class WindowPreview(QFrame):
         picture_box.setPixmap(self.image.scaled(WIDTH, HEIGHT, Qt.AspectRatioMode.KeepAspectRatio))
         layout.addWidget(picture_box)
 
-        title_label.setStyleSheet('QWidget { color: white; border: none; }')
+        title_label.setStyleSheet('QWidget { background-color: none; color: white; border: none; }')
         picture_box.setStyleSheet('QWidget { background-color: #1e1f22; border-radius: 10px; border: none; }')
         self.setStyleSheet('QFrame { background-color: #313338; border-radius: 10px; } QFrame:hover { border: solid; border-width: 2px; border-radius: 10px; border-color: #5865f2; }')
